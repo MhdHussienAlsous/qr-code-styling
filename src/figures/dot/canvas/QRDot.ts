@@ -37,6 +37,9 @@ export default class QRDot {
       case dotTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
         break;
+      case dotTypes.diamond:  // New case for diamond
+        drawFunction = this._drawDiamond;
+        break;
       case dotTypes.square:
       default:
         drawFunction = this._drawSquare;
@@ -152,6 +155,22 @@ export default class QRDot {
     });
   }
 
+  _basicDiamond(args: BasicFigureDrawArgsCanvas): void {
+    const { size, context } = args;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        context.moveTo(0, -size / 2); // Top
+        context.lineTo(size / 2, 0);  // Right
+        context.lineTo(0, size / 2);  // Bottom
+        context.lineTo(-size / 2, 0); // Left
+        context.lineTo(0, -size / 2); // Back to Top
+      }
+    });
+  }
+
+
   _drawDot({ x, y, size, context }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation: 0 });
   }
@@ -258,6 +277,11 @@ export default class QRDot {
     }
   }
 
+  _drawDiamond({ x, y, size, context }: DrawArgsCanvas): void {
+    this._basicDiamond({ x, y, size, context, rotation: 0 });
+  }
+
+
   _drawClassy({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
     const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
     const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
@@ -309,4 +333,6 @@ export default class QRDot {
 
     this._basicSquare({ x, y, size, context, rotation: 0 });
   }
+
+
 }
